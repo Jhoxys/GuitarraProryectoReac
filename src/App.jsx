@@ -7,8 +7,9 @@ import { db } from './date/db'
 
 function App() {
 
- //   console.log(db);
+    //   console.log(db);
     const [data, setData] = useState(db)
+    const [cart, setCart] = useState([])
     //const [auth,setAuth] = useState(true)
     ////const [total, setTotal] = useState(0)
 
@@ -23,14 +24,37 @@ function App() {
 
     //},3000);
 
+    function AddToCart(item) {
+        const itemExists = cart.findIndex((guitar) => guitar.id === item.id)
+        console.log(itemExists)
 
+        if (itemExists >= 0) {
+     
+            const updateCart = [...cart]
 
+            updateCart[itemExists].quantiy++;
+            setCart(updateCart)
+
+        } else {
+                   
+            item.quantiy = 1;
+            setCart([...cart, item])
+        }
+  
+
+    }
+    function increaseQuantity(id) {
+        console.log("incrementando ", id)
+    }
 
     return (
 
       <>
 
-          <Header />    
+            <Header
+                cart={cart}
+             //   key={cart.id}
+            />    
 
 
 
@@ -42,8 +66,12 @@ function App() {
                   {
                         data.map((guitar) => 
                             (
-                        <Guitar
+                            <Guitar
+                                key={guitar.id}
                                 guitar={guitar}
+                                AddToCart={AddToCart}
+                                increaseQuantity={increaseQuantity}
+                                
                           
 
                         />      
