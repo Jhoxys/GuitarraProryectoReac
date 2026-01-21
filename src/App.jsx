@@ -7,17 +7,24 @@ import { db } from './date/db'
 
 function App() {
 
+    const initialCart = () => {
+        const localStorageCart = localStorage.getItem('cart')
+        return localStorageCart ? JSON.parse(localStorageCart) : []
+
+    }
+
     //   console.log(db);
     const [data, setData] = useState(db)
-    const [cart, setCart] = useState([])
+    const [cart, setCart] = useState(initialCart)
     //const [auth,setAuth] = useState(true)
     ////const [total, setTotal] = useState(0)
 
     useEffect(() => {
-      //  console.log("Escuchando por auth")
-        setData(db)
+        //  console.log("Escuchando por auth")
+        localStorage.setItem('cart', JSON.stringify(cart))
+       // setData(db)
 
-    }, []);
+    }, [cart]);
 
     //setTimeout(() => {
     //    setAuth(false);
@@ -41,11 +48,76 @@ function App() {
             setCart([...cart, item])
         }
   
+     
+    }
+    function removeFromCart( id) {
+
+        console.log('Eliminando...', id)
+
+        setCart(prevCart => prevCart.filter(guitar=>   guitar.id  !== id)) // eliminar 
 
     }
+
+
     function increaseQuantity(id) {
+
+        const updateCart = cart.map(item => {
+
+            if (item.id === id && item.quantiy <10) {
+                return {
+                    ...item,
+                    quantiy: item.quantiy + 1  // aqui le hacemos el cambio
+               }
+
+            }
+            return  item //   aqui retornamso el item completo con todo y cambio
+
+        } ) // eliminar 
+
+
+
+        setCart(updateCart)
+
         console.log("incrementando ", id)
     }
+
+    function DecreaseQuantity(id) {
+
+        const updateCart = cart.map(item => {
+
+            if (item.id === id && item.quantiy > 1) {
+                return {
+                    ...item,
+                    quantiy: item.quantiy - 1  // aqui le hacemos el cambio
+                }
+
+            }
+            return item //   aqui retornamso el item completo con todo y cambio
+
+        }) // eliminar 
+
+
+
+        setCart(updateCart)
+
+        console.log("incrementando ", id)
+    }
+
+
+    function emptyCart() {
+
+        console.log("vaceando carrito ")
+
+        setCart([])
+        //setTimeout(() => {
+  
+        //},3000)
+
+
+    }
+
+
+
 
     return (
 
@@ -53,7 +125,11 @@ function App() {
 
             <Header
                 cart={cart}
-             //   key={cart.id}
+                removeFromCart={removeFromCart}
+                increaseQuantity={increaseQuantity}
+                DecreaseQuantity={DecreaseQuantity}
+                emptyCart={emptyCart}
+
             />    
 
 
@@ -72,8 +148,7 @@ function App() {
                                 AddToCart={AddToCart}
                                 increaseQuantity={increaseQuantity}
                                 
-                          
-
+                             
                         />      
                         ))
                     }

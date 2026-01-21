@@ -1,7 +1,12 @@
 
-export default function Header({cart, increaseQuantity }) {
+import { useMemo } from "react"
 
-    const name ="Jhoxys"
+export default function Header({ cart, removeFromCart, increaseQuantity, DecreaseQuantity, emptyCart }) {
+
+    const name = "Jhoxys"
+
+    const isEmty = useMemo(() => cart.length === 0, [cart])   // state derivados
+    const carTotal = useMemo(() => cart.reduce((total,  item) => total + (item.quantiy * item.price), 0), [cart]) 
 
     return (
         <>
@@ -21,13 +26,13 @@ export default function Header({cart, increaseQuantity }) {
                                 <img className="img-fluid" src="./public/img/carrito.png" alt="imagen carrito" />
 
                                 <div id="carrito" className="bg-white p-3">
-                                    {cart.length === 0 ? (
+                                    {isEmty ? (
 
                                         <p className="text-center">El carrito esta vacio favor llenanor</p>
 
 
                                     ) : (
-
+                                        <>
 
                                     <table className="w-100 table">
                                         <thead>
@@ -58,25 +63,32 @@ export default function Header({cart, increaseQuantity }) {
                                                 <td className="flex align-items-start gap-4">
                                                     <button
                                                         type="button"
-                                                        className="btn btn-dark"
+                                                             className="btn btn-dark"
+                                                             onClick={() => DecreaseQuantity(guitar.id)}
                                                     >
                                                         -
                                                     </button>
                                                          {guitar.quantiy}
                                                     <button
-                                                        type="button"
-                                                        className="btn btn-dark"
+                                                             type="button"
+                                                             className="btn btn-dark"
+                                                             onClick={() => increaseQuantity(guitar.id)  }
                                                     >
                                                         +
                                                     </button>
                                                 </td>
-                                                <td>
-                                                    <button
-                                                        className="btn btn-danger"
-                                                        type="button"
-                                                    >
-                                                        X
-                                                    </button>
+                                                     <td>
+                                                  
+                                                             <button
+                                                             className="btn btn-danger"
+                                                             type="button"
+                                                             onClick={() => removeFromCart(guitar.id)}
+                                                             >
+                                                                 X
+                                                             </button>
+
+
+                                                  
                                                 </td>
                                                  </tr>
                                              ))}
@@ -84,9 +96,12 @@ export default function Header({cart, increaseQuantity }) {
                                         </tbody>
                                     </table>
                                     
+                                 
+                                                <p className="text-end">Total pagar: <span className="fw-bold">${carTotal}</span></p>
+                                    </>
                                     )}
-                                    <p className="text-end">Total pagar: <span className="fw-bold">$899</span></p>
-                                    <button className="btn btn-dark w-100 mt-3 p-2">Vaciar Carrito</button>
+
+                                    <button className="btn btn-dark w-100 mt-3 p-2" onClick={emptyCart} >Vaciar Carrito</button>
                                 </div>
                             </div>
                         </nav>
